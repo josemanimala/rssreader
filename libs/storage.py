@@ -2,8 +2,9 @@ import rocksdb
 import hashlib
 import traceback
 
+
 def createoropen(path, dbname):
-    
+
     opts = rocksdb.Options()
     opts.create_if_missing = True
     opts.max_open_files = 300000
@@ -11,19 +12,20 @@ def createoropen(path, dbname):
     opts.max_write_buffer_number = 3
     opts.target_file_size_base = 67108864
 
-
     opts.table_factory = rocksdb.BlockBasedTableFactory(
-            filter_policy=rocksdb.BloomFilterPolicy(10),
-            block_cache=rocksdb.LRUCache(2 * (1024 ** 3)),
-            block_cache_compressed=rocksdb.LRUCache(500 * (1024 ** 2)))
+        filter_policy=rocksdb.BloomFilterPolicy(10),
+        block_cache=rocksdb.LRUCache(2 * (1024 ** 3)),
+        block_cache_compressed=rocksdb.LRUCache(500 * (1024 ** 2)),
+    )
 
     try:
-        db = rocksdb.DB(path+"/{dbname}", opts)
+        db = rocksdb.DB(path + "/{dbname}", opts)
     except Exception as e:
         print(traceback.format_exc())
         return None
 
     return db
+
 
 def write(db, writelist):
     try:
@@ -48,4 +50,3 @@ def read(db, key):
         return False
 
     return value
-

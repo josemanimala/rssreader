@@ -1,7 +1,7 @@
 def get_feed(url):
-    
+
     import feedparser
-    
+
     feed = feedparser.parse(url)
 
     if feed.bozo != 1:
