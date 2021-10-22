@@ -19,7 +19,8 @@ def createoropen(path, dbname):
     )
 
     try:
-        db = rocksdb.DB(path + "/{dbname}", opts)
+        filename = f"{path}/{dbname}"
+        db = rocksdb.DB(filename, opts)
     except Exception as e:
         print(traceback.format_exc())
         return None
@@ -30,8 +31,9 @@ def createoropen(path, dbname):
 def write(db, writelist):
     try:
         batch = rocksdb.WriteBatch()
-        for item in writelist:
-            batch.put(hashlib.sha256(item["key"]).digest(), item["value"])
+        for key, value in writelist.items():
+            print(key)
+            batch.put(hashlib.sha256(key.encode("utf-8")).digest(), value)
         db.write(batch)
 
     except Exception as e:
@@ -44,7 +46,7 @@ def write(db, writelist):
 def read(db, key):
 
     try:
-        value = db.get(hashlib.sha256(key).digest())
+        value = db.get(hashlib.sha256(key.encode("utf-8")).digest())
     except Exception as e:
         print(traceback.format_exc())
         return False
